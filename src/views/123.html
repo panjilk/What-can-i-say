@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Read Excel File</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.4/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <input type="file" id="fileInput">
+    <button onclick="readExcel()">Read Excel File</button>
+
+    <script>
+        function readExcel() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+
+                    workbook.SheetNames.forEach(sheetName => {
+                        const worksheet = workbook.Sheets[sheetName];
+                        console.log(XLSX.utils.sheet_to_json(worksheet, { header: 1 }));
+                    });
+                };
+
+                reader.readAsArrayBuffer(file);
+            } else {
+                console.log('Please select an Excel file.');
+            }
+        }
+    </script>
+</body>
+</html>
